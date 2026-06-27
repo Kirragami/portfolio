@@ -23,7 +23,7 @@ body {
   margin: 0;
   min-height: 100dvh;
   display: grid;
-  grid-template-columns: var(--sidebar) 1fr;
+  grid-template-columns: 1fr;
   background: var(--bg);
   color: var(--fg);
   font-family: var(--font-body);
@@ -75,21 +75,22 @@ a:hover {
 
 .sidebar {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  align-items: center;
   justify-content: space-between;
-  gap: 2rem;
-  padding: clamp(1.5rem, 4vw, 3rem);
-  border-right: 1px solid var(--line);
-  min-height: 100dvh;
-  position: sticky;
-  top: 0;
-  align-self: start;
+  gap: 1.25rem;
+  padding: clamp(1rem, 3vw, 1.5rem) clamp(1.25rem, 4vw, 2rem);
+  border-bottom: 1px solid var(--line);
+  min-height: auto;
+  position: static;
 }
 
 .nav {
   display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  row-gap: 0.5rem;
 }
 
 .nav-btn {
@@ -117,9 +118,9 @@ a:hover {
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-height: 100dvh;
+  min-height: auto;
   padding: clamp(1.5rem, 4vw, 3rem);
-  padding-bottom: clamp(5rem, 10vw, 7rem);
+  padding-bottom: clamp(2rem, 5vw, 3rem);
   min-width: 0;
 }
 
@@ -134,13 +135,126 @@ a:hover {
 }
 
 .status-rail {
-  padding: clamp(1.25rem, 3vw, 2.5rem);
+  --rail-split: clamp(2rem, 5vh, 3.5rem);
+  --rail-card-pad-y: 0.875rem;
+  --rail-card-pad-x: 1rem;
+  --rail-heading: 0.8125rem;
+  --rail-heading-gap: clamp(0.875rem, 2vh, 1.25rem);
+  --rail-clock: clamp(1.5rem, 2.5vw, 1.875rem);
+  --rail-meta: 0.75rem;
+  --rail-body: 0.875rem;
+  --rail-small: 0.8125rem;
+  --rail-tiny: 0.75rem;
+  --rail-art: 3.5rem;
+  --rail-art-small: 1.25rem;
+  --rail-activity-type: 0.6875rem;
+  --rail-activity-name: 0.875rem;
+  --rail-activity-line: 0.8125rem;
+  --rail-activity-elapsed: 0.75rem;
+  --rail-progress-time: 0.6875rem;
+
+  display: flex;
+  justify-content: center;
+  padding: clamp(2rem, 5vw, 3rem) clamp(1.25rem, 4vw, 2rem);
   border-top: 1px solid var(--line);
 }
 
-.status-panel h2,
-.status-heading {
-  margin-bottom: 1.25rem;
+.status-panel {
+  width: 100%;
+  max-width: min(20rem, calc(100vw - 3rem));
+  display: flex;
+  flex-direction: column;
+  gap: var(--rail-split);
+}
+
+.status-rail .status-panel h2,
+.status-rail .status-heading {
+  margin-bottom: var(--rail-heading-gap);
+  font-size: var(--rail-heading);
+}
+
+.status-rail .status-card {
+  padding: var(--rail-card-pad-y) var(--rail-card-pad-x);
+  margin-bottom: clamp(0.625rem, 1.4vh, 0.875rem);
+}
+
+.status-rail .activity-list {
+  gap: clamp(0.625rem, 1.5vh, 0.875rem);
+}
+
+.status-rail .activity-row {
+  gap: clamp(0.5rem, 1.2vw, 0.75rem);
+}
+
+.status-rail .status-meta-label {
+  font-size: var(--rail-meta);
+}
+
+.status-rail .status-clock {
+  font-size: var(--rail-clock);
+}
+
+.status-rail .status-date,
+.status-rail .status-tz {
+  font-size: var(--rail-small);
+}
+
+.status-rail .activity-type {
+  font-size: var(--rail-activity-type);
+}
+
+.status-rail .activity-name {
+  font-size: var(--rail-activity-name);
+}
+
+.status-rail .activity-line,
+.status-rail .presence-quip {
+  font-size: var(--rail-activity-line);
+}
+
+.status-rail .activity-elapsed,
+.status-rail .activity-progress-times {
+  font-size: var(--rail-activity-elapsed);
+}
+
+.status-rail .activity-progress-times {
+  font-size: var(--rail-progress-time);
+}
+
+.status-rail .activity-art {
+  width: var(--rail-art);
+  height: var(--rail-art);
+}
+
+.status-rail .activity-art-small {
+  width: var(--rail-art-small);
+  height: var(--rail-art-small);
+}
+
+.status-rail .skeleton-art {
+  width: var(--rail-art);
+  height: var(--rail-art);
+}
+
+.status-rail .contact-row-label {
+  font-size: var(--rail-tiny);
+}
+
+.status-rail .contact-row-value {
+  font-size: var(--rail-small);
+}
+
+.status-top {
+  flex-shrink: 0;
+}
+
+.status-top .status-card:last-child {
+  margin-bottom: 0;
+}
+
+.status-bottom {
+  flex-shrink: 0;
+  margin-top: 0;
 }
 
 .status-heading + .status-heading,
@@ -764,9 +878,157 @@ a.contact-row:hover {
   opacity: 1;
 }
 
-@media (min-width: 1350px) {
+@media (min-width: 768px) {
   body {
-    grid-template-columns: var(--sidebar) 1fr var(--rail);
+    --rail: clamp(13rem, 22vw, 16rem);
+    grid-template-columns: minmax(0, 1fr) var(--rail);
+    grid-template-rows: auto minmax(0, 1fr);
+    grid-template-areas:
+      "top top"
+      "main rail";
+  }
+
+  .sidebar {
+    grid-area: top;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: var(--bg);
+  }
+
+  .content {
+    grid-area: main;
+    align-items: center;
+    min-height: calc(100dvh - 4.5rem);
+    padding-bottom: clamp(1.5rem, 4vw, 3rem);
+  }
+
+  .content:has(#home:not([hidden])) {
+    justify-content: center;
+  }
+
+  .status-rail {
+    grid-area: rail;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: clamp(0.875rem, 2vw, 1.5rem) clamp(0.75rem, 1.5vw, 1rem);
+    border-top: none;
+    border-left: 1px solid var(--line);
+    min-height: 100dvh;
+    position: sticky;
+    top: 0;
+    align-self: start;
+    --rail-split: clamp(1.75rem, 5vh, 2.75rem);
+    --rail-card-pad-y: clamp(0.625rem, 1.4vh, 0.8125rem);
+    --rail-card-pad-x: clamp(0.625rem, 1.4vw, 0.8125rem);
+    --rail-heading: clamp(0.625rem, 1.4vw, 0.6875rem);
+    --rail-heading-gap: clamp(0.625rem, 1.5vh, 0.875rem);
+    --rail-clock: clamp(1.125rem, 3.8vw, 1.4375rem);
+    --rail-meta: clamp(0.6875rem, 1.6vw, 0.75rem);
+    --rail-body: clamp(0.8125rem, 1.8vw, 0.875rem);
+    --rail-small: clamp(0.75rem, 1.7vw, 0.8125rem);
+    --rail-tiny: clamp(0.6875rem, 1.5vw, 0.75rem);
+    --rail-art: clamp(2.625rem, 9vw, 3.125rem);
+    --rail-art-small: clamp(0.9375rem, 2.8vw, 1.125rem);
+    --rail-activity-type: clamp(0.625rem, 1.4vw, 0.6875rem);
+    --rail-activity-name: clamp(0.8125rem, 1.9vw, 0.875rem);
+    --rail-activity-line: clamp(0.75rem, 1.8vw, 0.8125rem);
+    --rail-activity-elapsed: clamp(0.6875rem, 1.6vw, 0.75rem);
+    --rail-progress-time: clamp(0.625rem, 1.4vw, 0.6875rem);
+  }
+
+  .status-panel {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    width: 100%;
+    max-width: 100%;
+    min-height: calc(100dvh - clamp(1.75rem, 4vw, 3rem));
+    gap: var(--rail-split);
+  }
+
+  .status-bottom {
+    margin-top: auto;
+    padding-top: clamp(0.5rem, 1.5vh, 0.875rem);
+  }
+
+  .status-top .status-card:last-child {
+    margin-bottom: 0;
+  }
+
+  .projects.card-grid,
+  .skills.card-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1100px) {
+  body {
+    --sidebar: clamp(14rem, 16vw, 18rem);
+    --rail: clamp(14rem, 18vw, 20rem);
+    grid-template-columns: var(--sidebar) minmax(0, 1fr) var(--rail);
+    grid-template-rows: auto;
+    grid-template-areas: "sidebar content rail";
+  }
+
+  .sidebar {
+    grid-area: sidebar;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: space-between;
+    gap: 2rem;
+    padding: clamp(1.5rem, 3vw, 2.5rem);
+    border-right: 1px solid var(--line);
+    border-bottom: none;
+    min-height: 100dvh;
+    position: sticky;
+    top: 0;
+    align-self: start;
+    z-index: 1;
+  }
+
+  .nav {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    gap: 0.25rem;
+  }
+
+  .content {
+    grid-area: content;
+    min-height: 100dvh;
+    padding-bottom: clamp(1.5rem, 4vw, 3rem);
+  }
+
+  .status-rail {
+    grid-area: rail;
+    padding: clamp(1.25rem, 2.5vw, 2.5rem) clamp(1rem, 2vw, 1.5rem);
+    --rail-split: clamp(2rem, 6vh, 3.25rem);
+    --rail-card-pad-y: clamp(0.75rem, 1.5vh, 0.875rem);
+    --rail-card-pad-x: clamp(0.75rem, 1.5vw, 1rem);
+    --rail-heading: 0.6875rem;
+    --rail-heading-gap: clamp(0.75rem, 2vh, 1.125rem);
+    --rail-clock: clamp(1.375rem, 2.5vw, 1.875rem);
+    --rail-meta: 0.75rem;
+    --rail-body: 0.875rem;
+    --rail-small: 0.8125rem;
+    --rail-tiny: 0.75rem;
+    --rail-art: clamp(3rem, 4vw, 3.5rem);
+    --rail-art-small: 1.25rem;
+    --rail-activity-type: 0.6875rem;
+    --rail-activity-name: 0.875rem;
+    --rail-activity-line: 0.8125rem;
+    --rail-activity-elapsed: 0.75rem;
+    --rail-progress-time: 0.6875rem;
+  }
+
+  .status-panel {
+    max-width: 16rem;
+    min-height: calc(100dvh - clamp(2.5rem, 5vw, 5rem));
+  }
+
+  .status-bottom {
+    padding-top: clamp(0.625rem, 2vh, 1rem);
   }
 
   .panel-home {
@@ -775,32 +1037,6 @@ a.contact-row:hover {
 
   .home-lead {
     max-width: 38rem;
-  }
-
-  .status-rail {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: clamp(1.5rem, 3vw, 2.5rem);
-    border-top: none;
-    border-left: 1px solid var(--line);
-    min-height: 100dvh;
-    position: sticky;
-    top: 0;
-    align-self: start;
-  }
-
-  .status-panel {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    width: 100%;
-    max-width: 16rem;
-    min-height: calc(100dvh - clamp(3rem, 6vw, 5rem));
-  }
-
-  .status-bottom {
-    margin-top: auto;
   }
 
   .projects.card-grid {
@@ -822,84 +1058,36 @@ a.contact-row:hover {
   }
 }
 
-@media (max-width: 1349px) {
-  body {
-    grid-template-columns: 1fr;
-  }
-
-  .sidebar {
-    position: static;
-    min-height: auto;
-    border-right: none;
-    border-bottom: 1px solid var(--line);
-    gap: 1.5rem;
-  }
-
-  .nav {
-    flex-direction: row;
-    gap: 1.25rem;
-  }
-
-  .content {
-    align-items: center;
-    min-height: auto;
-  }
-
-  .content:has(#home:not([hidden])) {
-    justify-content: center;
-    padding-bottom: clamp(2rem, 5vw, 3rem);
-  }
-
-  .status-rail {
-    display: flex;
-    justify-content: center;
-    padding-top: clamp(2rem, 5vw, 3rem);
-    padding-bottom: clamp(2rem, 5vw, 3rem);
-  }
-
-  .status-panel {
-    width: 100%;
-    max-width: min(20rem, calc(100vw - 3rem));
-    display: flex;
-    flex-direction: column;
-    gap: clamp(3rem, 8vw, 3.75rem);
-  }
-
-  .status-top .status-card:last-child {
-    margin-bottom: 0;
-  }
-
-  .status-bottom {
-    margin-top: 0;
-  }
-
-  .status-bottom .status-heading {
-    margin-bottom: 1.25rem;
-  }
-
+@media (max-width: 767px) {
   .projects.card-grid,
   .skills.card-grid {
     grid-template-columns: 1fr;
   }
 }
 
-@media (min-width: 600px) and (max-width: 1349px) {
-  .projects.card-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .skills.card-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+@media (max-width: 479px) {
+  .status-rail {
+    --rail-split: 3.5rem;
   }
 }
 
-@media (max-width: 479px) {
-  .status-panel {
-    gap: 3.5rem;
+@media (min-width: 768px) and (max-height: 740px) {
+  .status-rail {
+    min-height: auto;
+    max-height: 100dvh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    align-self: stretch;
   }
 
-  .nav {
-    flex-wrap: wrap;
-    row-gap: 0.5rem;
+  .status-panel {
+    min-height: auto;
+    flex: none;
+    gap: clamp(2rem, 5vh, 2.75rem);
+  }
+
+  .status-bottom {
+    margin-top: 0;
+    padding-top: 0;
   }
 }
