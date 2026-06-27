@@ -77,7 +77,7 @@ var ACTIVITY_TYPE_LABELS = {
   5: 'Competing in'
 };
 
-var activityTimer = null;
+var progressTimer = null;
 
 function pickRandom(list) {
   return list[Math.floor(Math.random() * list.length)];
@@ -145,13 +145,13 @@ function showPresenceQuip(text, muted) {
   quip.textContent = text;
   quip.classList.toggle('is-muted', !!muted);
   quip.hidden = false;
-  stopActivityTimer();
+  stopProgressTimer();
 }
 
-function stopActivityTimer() {
-  if (activityTimer) {
-    clearInterval(activityTimer);
-    activityTimer = null;
+function stopProgressTimer() {
+  if (progressTimer) {
+    clearInterval(progressTimer);
+    progressTimer = null;
   }
 }
 
@@ -181,11 +181,11 @@ function updateProgressDisplays() {
   });
 }
 
-function startActivityTimers() {
-  stopActivityTimer();
+function startProgressTimer() {
+  stopProgressTimer();
   updateProgressDisplays();
   if (document.querySelector('[data-progress-start]')) {
-    activityTimer = setInterval(updateProgressDisplays, 1000);
+    progressTimer = setInterval(updateProgressDisplays, 1000);
   }
 }
 
@@ -371,7 +371,7 @@ function renderActivityCards(views) {
   requestAnimationFrame(function () {
     refreshActivityScrolls();
   });
-  startActivityTimers();
+  startProgressTimer();
 }
 
 function buildSpotifyView(spotify) {
