@@ -150,7 +150,6 @@ a:hover {
   --rail-activity-type: 0.6875rem;
   --rail-activity-name: 0.875rem;
   --rail-activity-line: 0.8125rem;
-  --rail-activity-elapsed: 0.75rem;
   --rail-progress-time: 0.6875rem;
 
   display: flex;
@@ -210,11 +209,6 @@ a:hover {
 .status-rail .activity-line,
 .status-rail .presence-quip {
   font-size: var(--rail-activity-line);
-}
-
-.status-rail .activity-elapsed,
-.status-rail .activity-progress-times {
-  font-size: var(--rail-activity-elapsed);
 }
 
 .status-rail .activity-progress-times {
@@ -444,13 +438,6 @@ a:hover {
 .activity-line {
   font-size: 0.8125rem;
   line-height: 1.45;
-  color: var(--muted);
-}
-
-.activity-elapsed {
-  margin: 0.3125rem 0 0;
-  font-size: 0.75rem;
-  line-height: 1.4;
   color: var(--muted);
 }
 
@@ -934,7 +921,6 @@ a.contact-row:hover {
     --rail-activity-type: clamp(0.625rem, 1.4vw, 0.6875rem);
     --rail-activity-name: clamp(0.8125rem, 1.9vw, 0.875rem);
     --rail-activity-line: clamp(0.75rem, 1.8vw, 0.8125rem);
-    --rail-activity-elapsed: clamp(0.6875rem, 1.6vw, 0.75rem);
     --rail-progress-time: clamp(0.625rem, 1.4vw, 0.6875rem);
   }
 
@@ -1018,7 +1004,6 @@ a.contact-row:hover {
     --rail-activity-type: 0.6875rem;
     --rail-activity-name: 0.875rem;
     --rail-activity-line: 0.8125rem;
-    --rail-activity-elapsed: 0.75rem;
     --rail-progress-time: 0.6875rem;
   }
 

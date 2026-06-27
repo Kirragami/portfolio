@@ -77,7 +77,7 @@ var ACTIVITY_TYPE_LABELS = {
   5: 'Competing in'
 };
 
-var elapsedTimer = null;
+var activityTimer = null;
 
 function pickRandom(list) {
   return list[Math.floor(Math.random() * list.length)];
@@ -145,28 +145,14 @@ function showPresenceQuip(text, muted) {
   quip.textContent = text;
   quip.classList.toggle('is-muted', !!muted);
   quip.hidden = false;
-  stopElapsedTimer();
+  stopActivityTimer();
 }
 
-function stopElapsedTimer() {
-  if (elapsedTimer) {
-    clearInterval(elapsedTimer);
-    elapsedTimer = null;
+function stopActivityTimer() {
+  if (activityTimer) {
+    clearInterval(activityTimer);
+    activityTimer = null;
   }
-}
-
-function formatElapsed(startMs) {
-  var elapsed = Math.max(0, Date.now() - startMs);
-  var totalSeconds = Math.floor(elapsed / 1000);
-  var hours = Math.floor(totalSeconds / 3600);
-  var minutes = Math.floor((totalSeconds % 3600) / 60);
-  var seconds = totalSeconds % 60;
-
-  if (hours > 0) {
-    return hours + ':' + String(minutes).padStart(2, '0') + ':' + String(seconds).padStart(2, '0') + ' elapsed';
-  }
-
-  return minutes + ':' + String(seconds).padStart(2, '0') + ' elapsed';
 }
 
 function formatTrackTime(ms) {
@@ -174,14 +160,6 @@ function formatTrackTime(ms) {
   var minutes = Math.floor(totalSeconds / 60);
   var seconds = totalSeconds % 60;
   return minutes + ':' + String(seconds).padStart(2, '0');
-}
-
-function updateElapsedDisplays() {
-  document.querySelectorAll('[data-elapsed-start]').forEach(function (el) {
-    var start = Number(el.dataset.elapsedStart);
-    if (!start) return;
-    el.textContent = formatElapsed(start);
-  });
 }
 
 function updateProgressDisplays() {
@@ -203,15 +181,11 @@ function updateProgressDisplays() {
   });
 }
 
-function startElapsedTimers() {
-  stopElapsedTimer();
-  updateElapsedDisplays();
+function startActivityTimers() {
+  stopActivityTimer();
   updateProgressDisplays();
-  if (document.querySelector('[data-elapsed-start]') || document.querySelector('[data-progress-start]')) {
-    elapsedTimer = setInterval(function () {
-      updateElapsedDisplays();
-      updateProgressDisplays();
-    }, 1000);
+  if (document.querySelector('[data-progress-start]')) {
+    activityTimer = setInterval(updateProgressDisplays, 1000);
   }
 }
 
@@ -336,12 +310,6 @@ function createActivityCardElement(view) {
 
   if (view.isSpotify && view.progressStart && view.progressEnd) {
     info.appendChild(createSpotifyProgress(view.progressStart, view.progressEnd));
-  } else if (view.elapsedStart) {
-    var elapsed = document.createElement('p');
-    elapsed.className = 'activity-elapsed';
-    elapsed.dataset.elapsedStart = String(view.elapsedStart);
-    elapsed.textContent = formatElapsed(view.elapsedStart);
-    info.appendChild(elapsed);
   }
 
   row.appendChild(info);
@@ -403,7 +371,7 @@ function renderActivityCards(views) {
   requestAnimationFrame(function () {
     refreshActivityScrolls();
   });
-  startElapsedTimers();
+  startActivityTimers();
 }
 
 function buildSpotifyView(spotify) {
@@ -417,7 +385,6 @@ function buildSpotifyView(spotify) {
     state: spotify.artist || null,
     progressStart: timestamps.start || null,
     progressEnd: timestamps.end || null,
-    elapsedStart: null,
     largeImage: spotify.album_art_url || null,
     smallImage: null,
     largeAlt: spotify.album || spotify.song || 'Album art',
@@ -446,7 +413,6 @@ function buildActivityView(act) {
     name: act.name || '',
     details: act.details || null,
     state: act.state || null,
-    elapsedStart: act.timestamps && act.timestamps.start ? act.timestamps.start : null,
     largeImage: resolveAssetUrl(act.application_id, assets.large_image),
     smallImage: resolveAssetUrl(act.application_id, assets.small_image),
     largeAlt: assets.large_text || act.name || 'Activity artwork',
