@@ -9,6 +9,7 @@
   --content-wide: 58rem;
   --font-display: "Syne", system-ui, sans-serif;
   --font-body: "DM Sans", system-ui, sans-serif;
+  --topbar-height: 0px;
 }
 
 * {
@@ -248,7 +249,6 @@ a:hover {
 
 .status-bottom {
   flex-shrink: 0;
-  margin-top: 0;
 }
 
 .status-heading + .status-heading,
@@ -865,6 +865,12 @@ a.contact-row:hover {
   opacity: 1;
 }
 
+@media (min-width: 768px) and (max-width: 1099px) {
+  :root {
+    --topbar-height: 4.5rem;
+  }
+}
+
 @media (min-width: 768px) {
   body {
     --rail: clamp(13rem, 22vw, 16rem);
@@ -886,7 +892,7 @@ a.contact-row:hover {
   .content {
     grid-area: main;
     align-items: center;
-    min-height: calc(100dvh - 4.5rem);
+    min-height: calc(100dvh - var(--topbar-height));
     padding-bottom: clamp(1.5rem, 4vw, 3rem);
   }
 
@@ -896,16 +902,20 @@ a.contact-row:hover {
 
   .status-rail {
     grid-area: rail;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    display: block;
     padding: clamp(0.875rem, 2vw, 1.5rem) clamp(0.75rem, 1.5vw, 1rem);
     border-top: none;
     border-left: 1px solid var(--line);
-    min-height: 100dvh;
-    position: sticky;
-    top: 0;
-    align-self: start;
+    position: fixed;
+    right: 0;
+    top: var(--topbar-height);
+    width: var(--rail);
+    height: calc(100dvh - var(--topbar-height));
+    z-index: 1;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
     --rail-split: clamp(1.75rem, 5vh, 2.75rem);
     --rail-card-pad-y: clamp(0.625rem, 1.4vh, 0.8125rem);
     --rail-card-pad-x: clamp(0.625rem, 1.4vw, 0.8125rem);
@@ -925,18 +935,9 @@ a.contact-row:hover {
   }
 
   .status-panel {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
     width: 100%;
     max-width: 100%;
-    min-height: calc(100dvh - clamp(1.75rem, 4vw, 3rem));
-    gap: var(--rail-split);
-  }
-
-  .status-bottom {
-    margin-top: auto;
-    padding-top: clamp(0.5rem, 1.5vh, 0.875rem);
+    margin-inline: auto;
   }
 
   .status-top .status-card:last-child {
@@ -988,7 +989,20 @@ a.contact-row:hover {
 
   .status-rail {
     grid-area: rail;
+    display: block;
     padding: clamp(1.25rem, 2.5vw, 2.5rem) clamp(1rem, 2vw, 1.5rem);
+    border-top: none;
+    border-left: 1px solid var(--line);
+    position: fixed;
+    right: 0;
+    top: 0;
+    width: var(--rail);
+    height: 100dvh;
+    z-index: 1;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
     --rail-split: clamp(2rem, 6vh, 3.25rem);
     --rail-card-pad-y: clamp(0.75rem, 1.5vh, 0.875rem);
     --rail-card-pad-x: clamp(0.75rem, 1.5vw, 1rem);
@@ -1009,11 +1023,7 @@ a.contact-row:hover {
 
   .status-panel {
     max-width: 16rem;
-    min-height: calc(100dvh - clamp(2.5rem, 5vw, 5rem));
-  }
-
-  .status-bottom {
-    padding-top: clamp(0.625rem, 2vh, 1rem);
+    margin-inline: auto;
   }
 
   .panel-home {
@@ -1053,26 +1063,5 @@ a.contact-row:hover {
 @media (max-width: 479px) {
   .status-rail {
     --rail-split: 3.5rem;
-  }
-}
-
-@media (min-width: 768px) and (max-height: 740px) {
-  .status-rail {
-    min-height: auto;
-    max-height: 100dvh;
-    overflow-y: auto;
-    overscroll-behavior: contain;
-    align-self: stretch;
-  }
-
-  .status-panel {
-    min-height: auto;
-    flex: none;
-    gap: clamp(2rem, 5vh, 2.75rem);
-  }
-
-  .status-bottom {
-    margin-top: 0;
-    padding-top: 0;
   }
 }

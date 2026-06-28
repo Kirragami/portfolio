@@ -31,10 +31,12 @@ document.addEventListener('DOMContentLoaded', function () {
   document.querySelectorAll('[data-carousel]').forEach(initCarousel);
   initLocalClock();
   initActivityScrollObserver();
+  initRailLayout();
   initDiscordStatus();
 });
 
 var scrollResizeObserver = null;
+var railLayoutObserver = null;
 
 var DISCORD_USER_ID = '492633487753478154';
 var LANYARD_WS = 'wss://api.lanyard.rest/socket';
@@ -119,6 +121,38 @@ function initActivityScrollObserver() {
     refreshActivityScrolls();
   });
   scrollResizeObserver.observe(target);
+}
+
+function syncRailTopbarHeight() {
+  var root = document.documentElement;
+
+  if (window.matchMedia('(max-width: 767px)').matches) {
+    root.style.removeProperty('--topbar-height');
+    return;
+  }
+
+  if (window.matchMedia('(min-width: 1100px)').matches) {
+    root.style.setProperty('--topbar-height', '0px');
+    return;
+  }
+
+  var sidebar = document.querySelector('.sidebar');
+  if (!sidebar) return;
+
+  var height = sidebar.getBoundingClientRect().height;
+  root.style.setProperty('--topbar-height', Math.ceil(height) + 'px');
+}
+
+function initRailLayout() {
+  syncRailTopbarHeight();
+  window.addEventListener('resize', syncRailTopbarHeight);
+  window.addEventListener('orientationchange', syncRailTopbarHeight);
+
+  var sidebar = document.querySelector('.sidebar');
+  if (!sidebar || railLayoutObserver || typeof ResizeObserver === 'undefined') return;
+
+  railLayoutObserver = new ResizeObserver(syncRailTopbarHeight);
+  railLayoutObserver.observe(sidebar);
 }
 
 function setPresenceLoading(loading) {
