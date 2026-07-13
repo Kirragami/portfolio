@@ -29,9 +29,9 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   document.querySelectorAll('[data-carousel]').forEach(initCarousel);
+  initCopyButtons();
   initCarouselThumbnails();
   initMediaLightbox();
-  initCopyButtons();
   initLocalClock();
   initActivityScrollObserver();
   initRailLayout();
@@ -718,10 +718,39 @@ function initCarouselThumbnails() {
   });
 }
 
+function copyToClipboard(text) {
+  if (navigator.clipboard && window.isSecureContext) {
+    return navigator.clipboard.writeText(text);
+  }
+
+  return new Promise(function (resolve, reject) {
+    const area = document.createElement('textarea');
+    area.value = text;
+    area.setAttribute('readonly', '');
+    area.style.cssText = 'position:fixed;top:0;left:0;width:2em;height:2em;padding:0;border:none;outline:none;opacity:0';
+    document.body.appendChild(area);
+    area.focus();
+    area.select();
+    area.setSelectionRange(0, text.length);
+
+    try {
+      if (document.execCommand('copy')) {
+        resolve();
+      } else {
+        reject(new Error('Copy failed'));
+      }
+    } catch (err) {
+      reject(err);
+    } finally {
+      document.body.removeChild(area);
+    }
+  });
+}
+
 function initCopyButtons() {
   document.querySelectorAll('[data-copy]').forEach(function (btn) {
     btn.addEventListener('click', function () {
-      const text = btn.dataset.copy;
+      const text = btn.getAttribute('data-copy');
       if (!text) return;
 
       function showCopied() {
@@ -738,24 +767,7 @@ function initCopyButtons() {
         }, 1500);
       }
 
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(text).then(showCopied).catch(fallbackCopy);
-      } else {
-        fallbackCopy();
-      }
-
-      function fallbackCopy() {
-        const area = document.createElement('textarea');
-        area.value = text;
-        area.setAttribute('readonly', '');
-        area.style.position = 'fixed';
-        area.style.left = '-9999px';
-        document.body.appendChild(area);
-        area.select();
-        document.execCommand('copy');
-        document.body.removeChild(area);
-        showCopied();
-      }
+      copyToClipboard(text).then(showCopied);
     });
   });
 }
