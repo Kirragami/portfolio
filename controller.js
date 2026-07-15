@@ -580,21 +580,29 @@ function initLocalClock() {
   var tz = document.getElementById('localTz');
   if (!clock) return;
 
+
+  var yangonTz = 'Asia/Yangon';
+
   if (tz) {
-    tz.textContent = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    tz.textContent = yangonTz;
   }
 
   function tick() {
     var now = new Date();
-    clock.textContent = now.toLocaleTimeString(undefined, {
+    
+    
+    clock.textContent = now.toLocaleTimeString('en-US', {
+      timeZone: yangonTz,
       hour: '2-digit',
       minute: '2-digit',
       second: '2-digit',
       hour12: false
     });
 
+    
     if (date) {
-      date.textContent = now.toLocaleDateString(undefined, {
+      date.textContent = now.toLocaleDateString('en-US', {
+        timeZone: yangonTz,
         weekday: 'long',
         month: 'short',
         day: 'numeric'
